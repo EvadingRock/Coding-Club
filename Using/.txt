@@ -1,0 +1,80 @@
+5
+1 2
+2 3 5
+1 1
+4 1 2 3 5
+1 4
+answer = 2 3 1 5 4
+
+4
+0 2 3
+0 1 4
+0 1 2
+0 3 1
+answer: 2 4 1 3
+
+3
+0 2 3
+0 1 3
+0 1 2
+answer: 2 3 1
+
+
+
+
+
+
+
+
+stu_count = int(input())
+gift_graph = {}
+
+for s in range(stu_count):
+    can_gift = [int(x) for x in input().split()]
+    can_gift.pop(0)
+    gift_graph[s + 1] = can_gift
+
+print(gift_graph)
+
+
+def find_entry(array):
+    for i in range(len(array) - 1, -1, -1):
+        if type(array[i]) is list:
+            return array[i][0]
+
+
+def find_rem(history, array):
+    for node in array:
+        if node not in history:
+            return node
+
+
+# assign([1], stu_count)
+def assign(visited, rem):
+    for path in gift_graph[visited[-1]]:
+        if path in visited[:-1]:
+            continue
+
+        if path == find_entry(visited):
+            if rem == 0:
+                return path
+
+            visited.append([find_rem(visited, gift_graph.keys())])
+
+            calc_val = assign(visited, rem - 1)
+            if calc_val is not None:
+                return calc_val
+
+        visited.append(path)
+        calc_val = assign(visited, rem - 1)
+        if calc_val is not None:
+            return calc_val
+
+
+computed = 0
+for start in range(1, len(gift_graph) + 1):
+    computed = assign([[start]], len(gift_graph))
+    if computed is not None:
+        break
+
+print(computed)
